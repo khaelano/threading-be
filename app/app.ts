@@ -44,7 +44,8 @@ app.post("/posts", async (req, res) => {
       },
     });
     res.json(post);
-  } catch {
+  } catch(error) {
+    console.log(error)
     res.status(400).json({message: 'bad request'})
   }
 });
