@@ -1,0 +1,22 @@
+{
+  "name": "test-webserver",
+  "version": "1.0.0",
+  "description": "testing webserver dan docker compose",
+  "main": "app/app.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Khaelan Abroor Maulana",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.9",
+    "prisma": "^6.4.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
