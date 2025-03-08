@@ -11,6 +11,4 @@ RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-WORKDIR /dist
-
-CMD [ "node", "app.js" ]
+CMD [ "node", "/dist/app.js" ]
