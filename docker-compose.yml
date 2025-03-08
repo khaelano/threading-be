@@ -1,5 +1,6 @@
 services:
   server:
+    image: express-server
     build: .
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/serverdb?schema=public
