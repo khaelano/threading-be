@@ -8,7 +8,9 @@ RUN npm install
 
 RUN npm run build
 
-RUN npx prisma migrate deploy
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT [ "entrypoint.sh" ]
 
 WORKDIR ./dist
 
