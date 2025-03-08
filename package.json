@@ -4,7 +4,8 @@
   "description": "testing webserver dan docker compose",
   "main": "app/app.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/app.js"
   },
   "author": "Khaelan Abroor Maulana",
   "license": "ISC",

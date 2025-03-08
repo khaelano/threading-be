@@ -10,5 +10,3 @@ RUN npm run build
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-
-CMD [ "node", "/dist/app.js" ]
