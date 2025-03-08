@@ -8,6 +8,8 @@ RUN npm install
 
 RUN npm run build
 
+RUN npx prisma migrate deploy
+
 WORKDIR ./dist
 
 CMD [ "node", "app.js" ]
