@@ -4,4 +4,4 @@ set -e
 
 npx prisma migrate deploy
 
-node start
+npm start
