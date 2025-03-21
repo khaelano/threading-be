@@ -1,12 +1,18 @@
-FROM node:latest
-
-COPY . .
-
-EXPOSE 8080
+FROM node:slim AS build
+WORKDIR /temp/
+COPY package.json package-lock.json ./
 
 RUN npm install
+
+COPY ./ ./
 RUN npm run build
 
-RUN chmod +x /entrypoint.sh
+FROM node:slim AS deploy
+WORKDIR /app
+COPY --from=build /temp/dist/ ./dist/
+COPY --from=build /temp/package.json ./
+ENV NODE_ENV=production
+RUN npm install
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+EXPOSE 8080
+ENTRYPOINT [ "node", "./dist/app.js" ]
