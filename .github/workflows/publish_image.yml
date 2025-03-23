@@ -10,6 +10,8 @@ env:
 
 jobs:
   build:
+    permissions:
+      actions: write
     name: "Build Docker Image from Main Branch"
     runs-on: "ubuntu-24.04"
     steps:
