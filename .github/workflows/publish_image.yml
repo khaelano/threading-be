@@ -1,4 +1,4 @@
-name: "Build and Publish Image to Dockerhub"
+name: "Build and Publish Image to GHCR"
 on:
   push:
     branches:
