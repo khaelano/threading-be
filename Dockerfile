@@ -16,6 +16,7 @@ WORKDIR /app
 
 COPY --from=build /temp/dist/ ./dist/
 COPY --from=build /temp/entrypoint.sh ./
+COPY --from=build /temp/prisma/ ./
 COPY --from=build /temp/package.json ./
 
 ENV NODE_ENV=production
