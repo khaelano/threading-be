@@ -67,18 +67,24 @@ app.put("/posts/:id", async (req, res) => {
 
   const { title, content } = result.data;
 
-  const post = await prisma.post.update({
-    where: { id: requestedId },
-    data: {
-      title,
-      content,
-    },
-  });
-  if (post === null) {
-    res.status(404).json(response.err(404, "Post not found"));
-  }
+  try {
+    const post = await prisma.post.update({
+      where: { id: requestedId },
+      data: {
+        title,
+        content,
+      },
+    });
+    if (post === null) {
+      res.status(404).json(response.err(404, "Post not found"));
+    }
+
 
   res.json(response.ok(post));
+  } catch {
+    res.status(404).json(response.err(404, "Post not found"));
+    return;
+  }
 });
 
 app.delete("/posts/:id", async (req, res) => {
