@@ -1,16 +1,15 @@
 services:
   server:
-    image: express-server
-    build: .
-    environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/serverdb?schema=public
+    image: ghcr.io/final-project-devops/back-end:master
+    entrypoint: ["/bin/sh", "-c", "export DATABASE_URL=$$(cat /run/secrets/db_url) && cat /run/secrets/db_url && ./entrypoint.sh"]
     ports:
       - 8080:8080
     networks:
       - internal-net
+    secrets:
+      - db_url
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
   db:
     image: postgres:latest
@@ -19,18 +18,25 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     networks:
       - internal-net
+    secrets:
+      - postgres_user
+      - postgres_password
+
+secrets:
+  postgres_user:
+    external: true
+  postgres_password:
+    external: true
+  db_url:
+    external: true
 
 networks:
   internal-net:
+    driver: overlay,
 
 volumes:
   pgdata:
