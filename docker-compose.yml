@@ -8,6 +8,8 @@ services:
       - internal-net
     secrets:
       - db_url
+    deploy:
+      replicas: 3
     depends_on:
       - db
 
@@ -33,9 +35,6 @@ services:
         target: /etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
-    deploy:
-      placement: 
-        constraints: [node.role == manager]
     networks:
       - internal-net
 
@@ -45,9 +44,6 @@ services:
       - 3000:3000
     volumes:
       - grafana_data:/var/lib/grafana
-    deploy:
-      placement:
-        constraints: [node.role == manager]
     networks:
       - internal-net
 
