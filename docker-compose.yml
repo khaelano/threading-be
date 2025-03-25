@@ -36,7 +36,7 @@ secrets:
 
 networks:
   internal-net:
-    driver: overlay,
+    driver: overlay
 
 volumes:
   pgdata:
