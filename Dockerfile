@@ -23,6 +23,6 @@ ENV NODE_ENV=production
 RUN npm install
 
 RUN chmod +x ./entrypoint.sh
-EXPOSE 8080
+EXPOSE 80
 
 ENTRYPOINT [ "bash", "./entrypoint.sh" ]

@@ -4,7 +4,7 @@ import * as response from "./response";
 import * as request from "./request";
 
 const app = express();
-const port = 8080;
+const port = 80;
 
 app.use(express.json());
 
