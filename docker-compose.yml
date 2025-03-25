@@ -1,7 +1,7 @@
 services:
   server:
     image: ghcr.io/final-project-devops/back-end:master
-    entrypoint: ["/bin/sh", "-c", "export DATABASE_URL=$$(cat /run/secrets/db_url) && cat /run/secrets/db_url && ./entrypoint.sh"]
+    entrypoint: ["/bin/sh", "-c", "export DATABASE_URL=$$(cat /run/secrets/db_url) && ./entrypoint.sh"]
     ports:
       - 8080:8080
     networks:
