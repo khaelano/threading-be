@@ -1,9 +1,20 @@
 services:
-  server:
+  front-end:
+    image: ghcr.io/final-project-devops/front-end:main
+    ports:
+     - 80:80
+    networks:
+      - internal-net
+    deploy:
+      replicas: 3
+    depends_on:
+      - back-end
+
+  back-end:
     image: ghcr.io/final-project-devops/back-end:master
     entrypoint: ["/bin/sh", "-c", "export DATABASE_URL=$$(cat /run/secrets/db_url) && ./entrypoint.sh"]
-    ports:
-      - 80:8080
+    expose:
+      - 80
     networks:
       - internal-net
     secrets:
@@ -17,8 +28,8 @@ services:
     image: postgres:latest
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+    expose:
+      - 5432
     environment:
       POSTGRES_USER_FILE: /run/secrets/postgres_user
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
@@ -54,10 +65,12 @@ services:
     networks:
       - internal-net
 
+# Configurasi prometheus, ada di repositori backend
 configs:
   prometheus_config:
     file: ./prometheus.yml
 
+# Isi secrets terlampir pada .env
 secrets:
   postgres_user:
     external: true
