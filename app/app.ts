@@ -1,5 +1,6 @@
 import express from "express";
 import prisma from "./prisma";
+import cors from "cors";
 import * as response from "./response";
 import * as request from "./request";
 
@@ -7,6 +8,7 @@ const app = express();
 const port = 80;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.json("Hello world");
