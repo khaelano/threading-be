@@ -8,7 +8,11 @@ const app = express();
 const port = 80;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://fir-react-devops.web.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.get("/", (req, res) => {
   res.json("Hello world");
