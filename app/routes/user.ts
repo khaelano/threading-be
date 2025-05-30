@@ -3,39 +3,38 @@ import prisma from "../prisma";
 import * as response from "../response";
 import { z } from "zod";
 import * as argon2 from "argon2";
-import jwt from "jsonwebtoken";
+import { signToken } from "../jwt";
 import dotenv from "dotenv";
+import { loginSchema, registerSchema } from "../request";
 
 dotenv.config();
-const router = express.Router();
+const userRouter = express.Router();
 
 const secret = process.env.JWT_SECRET;
 if (secret === undefined) {
   throw new Error("Please define JWT_SECRET");
 }
 
-const createUserSchema = z.object({
-  name: z.string().max(25),
-  email: z.string().email(),
-  password: z.string().min(8).max(255),
-  bio: z.string().max(255),
-});
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().max(255),
-});
-
-router.post("/user/create", async (req, res) => {
-  const result = createUserSchema.safeParse(req.body);
+userRouter.post("/register", async (req, res) => {
+  const result = registerSchema.safeParse(req.body);
   if (!result.success) {
-    res
-      .status(400)
-      .json(response.err(400, "Invalid request body"));
+    console.log(req.body);
+    res.status(400).json(response.err(400, "Invalid request body"));
     return;
   }
 
-  const { name, email, password, bio } = result.data;
+  const { name, email, password } = result.data;
+
+  const existing = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (existing != null) {
+    res.status(401).json(response.err(401, "User already created"));
+    return;
+  }
 
   const hashedPassword = await argon2.hash(password);
   const user = await prisma.user.create({
@@ -43,23 +42,17 @@ router.post("/user/create", async (req, res) => {
       name,
       email,
       hashedPassword,
-      bio,
     },
   });
 
-  const token = jwt.sign({ userId: user.id }, secret, {
-    expiresIn: "1d",
-  });
-
-  res.json(response.ok(user.id));
+  const token = signToken(user.id.toString());
+  res.json(response.ok(token));
 });
 
-router.post("/user/login", async (req, res) => {
+userRouter.post("/login", async (req, res) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
-    res
-      .status(400)
-      .json(response.err(400, "Invalid request body"));
+    res.status(400).json(response.err(400, "Invalid request body"));
     return;
   }
 
@@ -73,21 +66,19 @@ router.post("/user/login", async (req, res) => {
 
   try {
     if (
-      user !== null &&
+      user === null ||
       !(await argon2.verify(user.hashedPassword, password))
     ) {
-      res
-        .status(401)
-        .json(
-          response.err(401, "Missing or invalid credentials")
-        );
+      res.status(401).json(response.err(401, "Missing or invalid credentials"));
       return;
     }
+
+    const token = signToken(user.id.toString());
+
+    res.json(response.ok(token));
   } catch {
-    res
-      .status(500)
-      .json(response.err(500, "Internal server error"));
+    res.status(500).json(response.err(500, "Internal server error"));
   }
 });
 
-export default router;
+export default userRouter;

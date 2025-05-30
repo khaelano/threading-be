@@ -13,10 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id Int @id @default(autoincrement())
+model User {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique @db.VarChar(255)
+  name           String   @db.VarChar(255)
+  hashedPassword String   @db.VarChar(255)
+  threads        Thread[]
+}
+
+model Thread {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title String @db.VarChar(255)
-  content String?
+  content   String?
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+
+  @@map("Post")
 }
