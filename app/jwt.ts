@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import * as response from "./response";
+import fs from "fs";
 
-const secret = process.env.JWT_SECRET;
+const secret = fs.readFileSync("/run/secrets/db_password", "utf8").trim();
 if (secret === undefined) {
   throw new Error("Please define JWT_SECRET");
 }

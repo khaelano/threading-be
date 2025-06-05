@@ -1,26 +1,24 @@
 services:
-  # front-end:
-  #   image: ghcr.io/final-project-devops/front-end:main
-  #   ports:
-  #    - 80:80
-  #   networks:
-  #     - internal-net
-  #   deploy:
-  #     replicas: 3
-  #   depends_on:
-  #     - back-end
+  frontend:
+    image: ghcr.io/khaelano/threading-fe:main
+    ports:
+      - 80:80
+    environment:
+      VITE_API_HOST: backend
+    networks:
+      - internal-net
+    depends_on:
+      - back-end
 
-  back-end:
-    image: ghcr.io/final-project-devops/back-end:master
-    entrypoint: ["/bin/sh", "-c", "export DATABASE_URL=$$(cat /run/secrets/db_url) && ./entrypoint.sh"]
+  backend:
+    image: ghcr.io/khaelano/threading-be:main
     ports:
       - 80:80
     networks:
       - internal-net
     secrets:
       - db_url
-    deploy:
-      replicas: 3
+      - jwt_secret
     depends_on:
       - db
 
@@ -39,44 +37,14 @@ services:
       - postgres_user
       - postgres_password
 
-  prometheus:
-    image: prom/prometheus:latest
-    configs:
-      - source: prometheus_config
-        target: /etc/prometheus/prometheus.yml
-    ports:
-      - 9090:9090
-    networks:
-      - internal-net
-
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - 3000:3000
-    volumes:
-      - grafana_data:/var/lib/grafana
-    networks:
-      - internal-net
-
-  node-exporter:
-    image: prom/node-exporter:latest
-    deploy:
-      mode: global
-    networks:
-      - internal-net
-
-# Configurasi prometheus, ada di repositori backend
-configs:
-  prometheus_config:
-    file: ./prometheus.yml
-
-# Isi secrets terlampir pada .env
 secrets:
   postgres_user:
     external: true
   postgres_password:
     external: true
   db_url:
+    external: true
+  jwt_secret:
     external: true
 
 networks:
@@ -85,4 +53,3 @@ networks:
 
 volumes:
   pgdata:
-  grafana_data:
