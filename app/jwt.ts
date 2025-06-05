@@ -2,7 +2,7 @@ import { Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import fs from "fs";
 
-const secret = fs.readFileSync("/run/secrets/db_password", "utf8").trim();
+const secret = fs.readFileSync("/run/secrets/jwt_secret", "utf8").trim();
 if (secret === undefined) {
   throw new Error("Please define JWT_SECRET");
 }
